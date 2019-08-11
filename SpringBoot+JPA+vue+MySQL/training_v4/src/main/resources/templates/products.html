@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Spring Boot+MySQL+VueJS+JPA</title>
+  <link href="https://unpkg.com/bootstrap@3.4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/products.css" rel="stylesheet"/>
+</head>
+<body>
+  <div class="container">
+    <h1>产品的增删改查</h1>
+    <main id="app">
+      <router-view></router-view>
+    </main>
+  </div>
+
+  <template id="product">
+    <div>
+      <h2>{{ product.name }}</h2>
+      <b>Description: </b>
+      <div>{{ product.description }}</div>
+      <b>Price:</b>
+      <div><span class="">RM</span> {{ product.price }}</div>
+      <br/>
+      <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+      <a>
+        <router-link to="/">返回产品列表</router-link>
+      </a>
+    </div>
+  </template>
+
+  <template id="product-list">
+    <div>
+      <div class="actions">
+        <a class="btn btn-default">
+          <router-link :to="{path: '/add-product'}">
+            <span class="glyphicon glyphicon-plus"></span>
+            添加产品
+          </router-link>
+        </a>
+      </div>
+      <div class="filters row">
+        <div class="form-group col-sm-3">
+          <input placeholder="搜索" v-model="searchKey" class="form-control" id="search-element" requred/>
+        </div>
+      </div>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>名称</th>
+          <th>描述</th>
+          <th>价格</th>
+          <th class="col-sm-2">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="product in filteredProducts">
+          <!-- tr v-for="product in products" -->
+          <!-- tr v-for="product in products | filterBy searchKey in 'name'" -->
+          <td>
+            <a>
+              <router-link :to="{name: 'product', params: {product_id: product.id}}">{{ product.name }}</router-link>
+            </a>
+          </td>
+          <td>{{ product.description }}</td>
+          <td>
+              <span class="" aria-hidden="true">RM</span>
+                {{ product.price }}
+          </td>
+          <td>
+            <a class="btn btn-warning btn-xs">
+              <router-link :to="{name: 'product-edit', params: {product_id: product.id}}">编辑</router-link>
+            </a>
+            <a class="btn btn-danger btn-xs">
+              <router-link :to="{name: 'product-delete', params: {product_id: product.id}}">删除</router-link>
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </template>
+
+
+  <template id="add-product">
+    <div>
+      <h2>添加新产品</h2>
+      <form @submit="createProduct">
+        <div class="form-group">
+          <label for="add-name">名称</label>
+          <input class="form-control" id="add-name" v-model="product.name" required/>
+        </div>
+        <div class="form-group">
+          <label for="add-description">描述</label>
+          <textarea class="form-control" id="add-description" rows="10" v-model="product.description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="add-price">价格, <span class="">RM</span></label>
+          <input type="number" class="form-control" id="add-price" v-model="product.price"/>
+        </div>
+        <button type="submit" class="btn btn-primary">添加</button>
+        <a class="btn btn-default">
+          <router-link to="/">取消</router-link>
+        </a>
+      </form>
+    </div>
+  </template>
+
+  <template id="product-edit">
+    <div>
+      <h2>修改产品</h2>
+      <form @submit="updateProduct">
+        <div class="form-group">
+          <label for="edit-name">名称</label>
+          <input class="form-control" id="edit-name" v-model="product.name" required/>
+        </div>
+        <div class="form-group">
+          <label for="edit-description">描述</label>
+          <textarea class="form-control" id="edit-description" rows="3" v-model="product.description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="edit-price">价格, <span class="">RM</span></label>
+          <input type="number" class="form-control" id="edit-price" v-model="product.price"/>
+        </div>
+        <button type="submit" class="btn btn-primary">提交</button>
+        <a class="btn btn-default">
+          <router-link to="/">取消</router-link>
+        </a>
+      </form>
+    </div>
+  </template>
+
+  <template id="product-delete">
+    <div>
+      <h2>删除产品{{ product.name }}</h2>
+      <form @submit="deleteProduct">
+        <p>确定要删除？</p>
+        <button type="submit" class="btn btn-danger">提交</button>
+        <a class="btn btn-default">
+          <router-link to="/">取消</router-link>
+        </a>
+      </form>
+    </div>
+  </template>
+
+  <script src="https://unpkg.com/vue@2.5.22/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router@3.0.2/dist/vue-router.js"></script>
+  <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
+  <script src="/products.js"></script>
+
+</body>
+</html>
